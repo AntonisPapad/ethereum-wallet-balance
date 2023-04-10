@@ -15,10 +15,8 @@ def create_web3_object():
     return Web3(Web3.HTTPProvider(alchemy_url))
 
 
-def get_token_balances(address, network_name):
-    w3 = create_web3_object()
-
-    # network = Network.ETH_MAINNET
+def get_token_balances(address, network_name, w3):
+    # create Alchemy object for specified network
     network_obj = getattr(Network, network_name)
     alchemy = Alchemy(ALCHEMY_API_KEY, network_obj)
 
@@ -66,11 +64,18 @@ def get_token_balances(address, network_name):
 
 
 def main():
-    address = ""
+    address = input("Enter Ethereum address: ")
+
+    w3 = create_web3_object()
+    # Check if address is valid
+    if not w3.is_address(address):
+        print("Invalid Ethereum address")
+        return
+
     networks = ["ETH_MAINNET", "ARB_MAINNET", "OPT_MAINNET"]
     for network in networks:
         pprint(f"Network: {network}")
-        pprint(get_token_balances(address, network))
+        pprint(get_token_balances(address, network, w3))
 
 
 if __name__ == "__main__":
